@@ -1,0 +1,15 @@
+{
+  "extends": "../tsconfig.base.json",
+  "compilerOptions": {
+    "outDir": "dist",
+    "rootDir": "src",
+    "types": ["node"],
+    "moduleResolution": "node",
+    "esModuleInterop": true,
+    "allowSyntheticDefaultImports": true,
+    "noEmit": false,
+    "declaration": false,
+    "sourceMap": true
+  },
+  "include": ["src"]
+}
