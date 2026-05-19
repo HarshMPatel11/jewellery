@@ -21,6 +21,7 @@ import { OrderTracking } from "@/pages/order-tracking";
 import { StaticPage } from "@/pages/static-page";
 import { ReturnRequest } from "@/pages/return-request";
 import { Admin } from "@/pages/admin";
+import { Account } from "@/pages/account";
 import NotFound from "@/pages/not-found";
 
 const queryClient = new QueryClient();
@@ -51,7 +52,7 @@ function Router() {
           <Route path="/shipping">{() => <StaticPage page="shipping" />}</Route>
           <Route path="/returns">{() => <StaticPage page="returns" />}</Route>
           <Route path="/return-request" component={ReturnRequest} />
-          <Route path="/account">{() => <StaticPage page="account" />}</Route>
+          <Route path="/account" component={Account} />
           <Route path="/admin" component={Admin} />
           <Route path="/about" component={About} />
           <Route path="/contact" component={Contact} />

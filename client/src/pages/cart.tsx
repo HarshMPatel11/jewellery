@@ -8,6 +8,7 @@ import { Label } from "@/components/ui/label";
 import { useState } from "react";
 import { useQueryClient } from "@tanstack/react-query";
 import { useToast } from "@/hooks/use-toast";
+import { requireAuth } from "@/lib/auth";
 
 export function Cart() {
   const sessionId = getSessionId();
@@ -80,6 +81,19 @@ export function Cart() {
   const handleCheckout = (e: React.FormEvent) => {
     e.preventDefault();
     if (!cart?.items || cart.items.length === 0) return;
+    if (!requireAuth()) {
+      toast({ title: "Login Required", description: "Please login or register before placing an order." });
+      setLocation("/account");
+      return;
+    }
+    if (!formData.customerName.trim() || !formData.customerEmail.trim() || !formData.shippingAddress.trim()) {
+      toast({ title: "Missing Details", description: "Please complete name, email, and shipping address." });
+      return;
+    }
+    if (formData.customerPhone.trim() && !/^\d{10,15}$/.test(formData.customerPhone.trim())) {
+      toast({ title: "Invalid Phone", description: "Phone number must contain only 10 to 15 digits." });
+      return;
+    }
 
     createOrder.mutate(
       {
@@ -184,7 +198,7 @@ export function Cart() {
         </div>
 
         <div className="lg:col-span-1">
-          <div className="bg-muted/30 p-8">
+          <div className="bg-muted/30 p-8 lg:sticky lg:top-28 lg:max-h-[calc(100vh-8rem)] lg:overflow-y-auto">
             <h2 className="font-serif text-2xl mb-6">Order Summary</h2>
             <div className="space-y-4 mb-8 text-sm">
               <div className="flex justify-between">
@@ -230,6 +244,7 @@ export function Cart() {
                 <Input 
                   id="name" 
                   required 
+                  minLength={2}
                   className="rounded-none bg-background" 
                   value={formData.customerName}
                   onChange={e => setFormData(f => ({ ...f, customerName: e.target.value }))}
@@ -250,9 +265,11 @@ export function Cart() {
                 <Label htmlFor="phone">Phone</Label>
                 <Input 
                   id="phone" 
+                  inputMode="numeric"
+                  pattern="[0-9]{10,15}"
                   className="rounded-none bg-background"
                   value={formData.customerPhone}
-                  onChange={e => setFormData(f => ({ ...f, customerPhone: e.target.value }))}
+                  onChange={e => setFormData(f => ({ ...f, customerPhone: e.target.value.replace(/\D/g, "") }))}
                 />
               </div>
               <div>

@@ -4,10 +4,19 @@ import { Button } from "@/components/ui/button";
 import { Sheet, SheetClose, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from "@/components/ui/sheet";
 import { getSessionId } from "@/lib/session";
 import { useGetCart, useGetWishlist } from "@workspace/api-client-react";
+import { getAuthEventName, getCurrentUser, logoutUser } from "@/lib/auth";
+import { useEffect, useState } from "react";
 
 export function Navbar() {
   const [location] = useLocation();
+  const [currentUser, setCurrentUser] = useState(() => getCurrentUser());
   const sessionId = getSessionId();
+
+  useEffect(() => {
+    const syncUser = () => setCurrentUser(getCurrentUser());
+    window.addEventListener(getAuthEventName(), syncUser);
+    return () => window.removeEventListener(getAuthEventName(), syncUser);
+  }, []);
 
   const { data: cart } = useGetCart(
     { sessionId },
@@ -38,7 +47,7 @@ export function Navbar() {
     { href: "/wishlist", label: "Wishlist" },
     { href: "/cart", label: "Cart" },
     { href: "/compare", label: "Compare" },
-    { href: "/account", label: "My Account" },
+    { href: "/account", label: currentUser ? "My Account" : "Login / Register" },
     { href: "/track-order", label: "Order Tracking" },
     { href: "/admin", label: "Admin Panel" },
   ];
@@ -77,6 +86,15 @@ export function Navbar() {
                       </Link>
                     </SheetClose>
                   ))}
+                  {currentUser && (
+                    <button
+                      type="button"
+                      onClick={logoutUser}
+                      className="border-b border-border py-4 text-left text-base font-medium text-muted-foreground transition-colors hover:text-primary"
+                    >
+                      Logout
+                    </button>
+                  )}
                 </nav>
               </SheetContent>
             </Sheet>
@@ -123,6 +141,7 @@ export function Navbar() {
             >
               <Link href="/account">
                 <User className="h-5 w-5" />
+                <span className="sr-only">{currentUser ? "My Account" : "Login"}</span>
               </Link>
             </Button>
             <Button

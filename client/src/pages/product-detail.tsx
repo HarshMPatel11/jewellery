@@ -14,6 +14,7 @@ import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { toggleCompareId } from "@/lib/compare";
 import { ProductCard } from "@/components/product-card";
+import { requireAuth } from "@/lib/auth";
 
 export function ProductDetail() {
   const { id } = useParams<{ id: string }>();
@@ -60,6 +61,12 @@ export function ProductDetail() {
   };
 
   const handleAddToCart = () => {
+    if (!requireAuth()) {
+      toast({ title: "Login Required", description: "Please login or register before adding items to your bag." });
+      setLocation("/account");
+      return;
+    }
+
     addToCart.mutate(
       { data: { productId, quantity, sessionId } },
       {
@@ -75,6 +82,12 @@ export function ProductDetail() {
   };
 
   const handleBuyNow = () => {
+    if (!requireAuth()) {
+      toast({ title: "Login Required", description: "Please login or register before buying this item." });
+      setLocation("/account");
+      return;
+    }
+
     addToCart.mutate(
       { data: { productId, quantity, sessionId } },
       {
@@ -130,6 +143,11 @@ export function ProductDetail() {
 
   const handleInquirySubmit = (e: React.FormEvent) => {
     e.preventDefault();
+    if (inquiryPhone.trim() && !/^\d{10,15}$/.test(inquiryPhone.trim())) {
+      toast({ title: "Invalid Phone", description: "Phone number must contain only 10 to 15 digits." });
+      return;
+    }
+
     submitInquiry.mutate(
       {
         data: {
@@ -362,7 +380,14 @@ export function ProductDetail() {
             </div>
             <div>
               <Label htmlFor="inquiry-phone">Phone</Label>
-              <Input id="inquiry-phone" value={inquiryPhone} onChange={(event) => setInquiryPhone(event.target.value)} className="rounded-none bg-background" />
+              <Input
+                id="inquiry-phone"
+                inputMode="numeric"
+                pattern="[0-9]{10,15}"
+                value={inquiryPhone}
+                onChange={(event) => setInquiryPhone(event.target.value.replace(/\D/g, ""))}
+                className="rounded-none bg-background"
+              />
             </div>
             <div className="md:col-span-2">
               <Label htmlFor="inquiry-message">Message</Label>

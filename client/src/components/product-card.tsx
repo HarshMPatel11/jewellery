@@ -1,4 +1,4 @@
-import { Link } from "wouter";
+import { Link, useLocation } from "wouter";
 import { GitCompare, Heart } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -8,6 +8,7 @@ import { getSessionId } from "@/lib/session";
 import { useQueryClient } from "@tanstack/react-query";
 import { useToast } from "@/hooks/use-toast";
 import { toggleCompareId } from "@/lib/compare";
+import { requireAuth } from "@/lib/auth";
 
 interface ProductCardProps {
   product: Product;
@@ -17,6 +18,7 @@ export function ProductCard({ product }: ProductCardProps) {
   const sessionId = getSessionId();
   const queryClient = useQueryClient();
   const { toast } = useToast();
+  const [, setLocation] = useLocation();
 
   const { data: wishlist } = useGetWishlist(
     { sessionId },
@@ -31,6 +33,12 @@ export function ProductCard({ product }: ProductCardProps) {
   const removeFromWishlist = useRemoveWishlistItem();
 
   const handleAddToCart = () => {
+    if (!requireAuth()) {
+      toast({ title: "Login Required", description: "Please login or register before adding items to your bag." });
+      setLocation("/account");
+      return;
+    }
+
     addToCart.mutate(
       { data: { productId: product.id, quantity: 1, sessionId } },
       {

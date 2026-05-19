@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Link, useSearch } from "wouter";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -11,6 +11,8 @@ export function ReturnRequest() {
   const search = useSearch();
   const orderId = new URLSearchParams(search).get("orderId") ?? "";
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [isFetchingOrder, setIsFetchingOrder] = useState(false);
+  const [orderFound, setOrderFound] = useState(false);
   const [formData, setFormData] = useState({
     orderId,
     customerName: "",
@@ -18,8 +20,49 @@ export function ReturnRequest() {
     reason: "",
   });
 
+  async function fetchOrder(value = formData.orderId) {
+    const numericOrderId = value.replace(/\D/g, "");
+    if (!numericOrderId) {
+      setOrderFound(false);
+      return;
+    }
+
+    setIsFetchingOrder(true);
+    try {
+      const response = await fetch(`/api/orders/${numericOrderId}`);
+      if (!response.ok) throw new Error("Order not found");
+      const order = await response.json();
+      setOrderFound(true);
+      setFormData((current) => ({
+        ...current,
+        orderId: String(order.id),
+        customerName: order.customerName ?? current.customerName,
+        customerEmail: order.customerEmail ?? current.customerEmail,
+      }));
+    } catch {
+      setOrderFound(false);
+      toast({ title: "Order Not Found", description: "Please enter a valid order number before submitting." });
+    } finally {
+      setIsFetchingOrder(false);
+    }
+  }
+
+  useEffect(() => {
+    if (orderId) void fetchOrder(orderId);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [orderId]);
+
   async function handleSubmit(event: React.FormEvent) {
     event.preventDefault();
+    if (!orderFound) {
+      toast({ title: "Order Required", description: "Please fetch a valid order before creating a return request." });
+      return;
+    }
+    if (!formData.customerName.trim() || !formData.customerEmail.trim() || !formData.reason.trim()) {
+      toast({ title: "Missing Details", description: "Please complete all return request fields." });
+      return;
+    }
+
     setIsSubmitting(true);
 
     try {
@@ -35,6 +78,7 @@ export function ReturnRequest() {
       if (!response.ok) throw new Error("Unable to create return request");
 
       setFormData({ orderId: "", customerName: "", customerEmail: "", reason: "" });
+      setOrderFound(false);
       toast({ title: "Return Request Sent", description: "Our team will review it and contact you shortly." });
     } catch {
       toast({ title: "Request Failed", description: "Please check the order details and try again." });
@@ -60,16 +104,26 @@ export function ReturnRequest() {
             id="orderId"
             required
             value={formData.orderId}
-            onChange={(event) => setFormData((current) => ({ ...current, orderId: event.target.value }))}
+            inputMode="numeric"
+            pattern="[0-9]+"
+            onBlur={() => fetchOrder()}
+            onChange={(event) => {
+              setOrderFound(false);
+              setFormData((current) => ({ ...current, orderId: event.target.value.replace(/\D/g, "") }));
+            }}
             placeholder="000001"
             className="rounded-none bg-background"
           />
+          <p className="mt-2 text-xs text-muted-foreground">
+            {isFetchingOrder ? "Fetching order..." : orderFound ? "Order found. Customer details filled from backend." : "Enter an existing order number."}
+          </p>
         </div>
         <div>
           <Label htmlFor="customerName">Full Name</Label>
           <Input
             id="customerName"
             required
+            minLength={2}
             value={formData.customerName}
             onChange={(event) => setFormData((current) => ({ ...current, customerName: event.target.value }))}
             className="rounded-none bg-background"

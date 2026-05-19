@@ -20,6 +20,11 @@ export function Contact() {
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
+    if (formData.phone.trim() && !/^\d{10,15}$/.test(formData.phone.trim())) {
+      toast({ title: "Invalid Phone", description: "Phone number must contain only 10 to 15 digits." });
+      return;
+    }
+
     createInquiry.mutate(
       { data: formData },
       {
@@ -74,9 +79,11 @@ export function Contact() {
               <Label htmlFor="phone">Phone Number (Optional)</Label>
               <Input 
                 id="phone" 
+                inputMode="numeric"
+                pattern="[0-9]{10,15}"
                 className="rounded-none border-border"
                 value={formData.phone}
-                onChange={e => setFormData(f => ({...f, phone: e.target.value}))}
+                onChange={e => setFormData(f => ({...f, phone: e.target.value.replace(/\D/g, "")}))}
               />
             </div>
             <div className="space-y-2">

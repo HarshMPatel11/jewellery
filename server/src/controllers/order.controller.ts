@@ -5,6 +5,7 @@ import { Product } from "../models/product.model.js";
 
 const SHIPPING_CHARGE = Number(process.env.SHIPPING_CHARGE) || 0;
 const TAX_RATE = Number(process.env.TAX_RATE) || 0.03;
+const PHONE_PATTERN = /^\d{10,15}$/;
 
 function formatOrder(order: any) {
   return {
@@ -43,6 +44,16 @@ export async function createOrder(req: Request, res: Response) {
   const orderItems = [];
   let subtotal = 0;
 
+  if (!customerName || !customerEmail || !shippingAddress) {
+    res.status(400).json({ error: "Name, email, and shipping address are required" });
+    return;
+  }
+
+  if (customerPhone && !PHONE_PATTERN.test(String(customerPhone))) {
+    res.status(400).json({ error: "Phone number must contain only 10 to 15 digits" });
+    return;
+  }
+
   for (const item of items ?? []) {
     const product = await Product.findOne({ id: Number(item.productId) }).lean();
     if (!product) continue;
@@ -55,6 +66,11 @@ export async function createOrder(req: Request, res: Response) {
       price,
     });
     subtotal += price * Number(item.quantity);
+  }
+
+  if (!orderItems.length) {
+    res.status(400).json({ error: "Order must include at least one valid item" });
+    return;
   }
 
   const coupon = couponCode

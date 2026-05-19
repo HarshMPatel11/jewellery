@@ -154,9 +154,12 @@ export function Home() {
               <p className="text-primary-foreground/80 text-lg mb-8 leading-relaxed">
                 Since 1924, Lumière has been synonymous with uncompromising quality. Every piece that leaves our atelier represents hundreds of hours of meticulous craftsmanship, blending traditional techniques with contemporary vision.
               </p>
-              <Button variant="outline" className="border-primary-foreground text-primary hover:bg-primary-foreground hover:text-primary rounded-none tracking-widest uppercase text-xs px-8 h-12" asChild>
-                <Link href="/about">Discover Our Heritage</Link>
-              </Button>
+              <Link
+                href="/about"
+                className="inline-flex h-12 items-center justify-center border border-primary-foreground bg-primary-foreground px-8 text-xs font-medium uppercase tracking-widest text-primary transition-colors hover:bg-primary-foreground/90 hover:text-primary focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-primary-foreground"
+              >
+                Discover Our Heritage
+              </Link>
             </div>
           </div>
         </div>

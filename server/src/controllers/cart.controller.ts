@@ -36,6 +36,11 @@ export async function addCartItem(req: Request, res: Response) {
   const sessionId = req.body.sessionId || DEFAULT_SESSION;
   const product = await Product.findOne({ id: productId });
 
+  if (typeof sessionId !== "string" || !sessionId.startsWith("user:")) {
+    res.status(401).json({ error: "Login is required before adding items to cart" });
+    return;
+  }
+
   if (!product) {
     res.status(404).json({ error: "Product not found" });
     return;

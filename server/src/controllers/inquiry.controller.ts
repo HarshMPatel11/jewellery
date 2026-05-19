@@ -1,6 +1,8 @@
 import type { Request, Response } from "express";
 import { Inquiry } from "../models/inquiry.model.js";
 
+const PHONE_PATTERN = /^\d{10,15}$/;
+
 function formatInquiry(inquiry: any) {
   return {
     id: inquiry.id,
@@ -19,6 +21,18 @@ export async function listInquiries(_req: Request, res: Response) {
 }
 
 export async function createInquiry(req: Request, res: Response) {
-  const inquiry = await Inquiry.create(req.body);
+  const phone = req.body.phone ? String(req.body.phone).trim() : "";
+
+  if (!req.body.name || !req.body.email || !req.body.message) {
+    res.status(400).json({ error: "Name, email, and message are required" });
+    return;
+  }
+
+  if (phone && !PHONE_PATTERN.test(phone)) {
+    res.status(400).json({ error: "Phone number must contain only 10 to 15 digits" });
+    return;
+  }
+
+  const inquiry = await Inquiry.create({ ...req.body, phone: phone || null });
   res.status(201).json(formatInquiry(inquiry));
 }
