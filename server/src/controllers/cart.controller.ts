@@ -1,6 +1,6 @@
 import type { Request, Response } from "express";
-import { CartItem } from "../models/cart.model";
-import { Product } from "../models/product.model";
+import { CartItem } from "../models/cart.model.js";
+import { Product } from "../models/product.model.js";
 
 const DEFAULT_SESSION = "default-session";
 

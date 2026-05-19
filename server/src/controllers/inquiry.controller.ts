@@ -1,5 +1,5 @@
 import type { Request, Response } from "express";
-import { Inquiry } from "../models/inquiry.model";
+import { Inquiry } from "../models/inquiry.model.js";
 
 function formatInquiry(inquiry: any) {
   return {

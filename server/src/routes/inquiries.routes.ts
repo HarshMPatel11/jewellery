@@ -1,5 +1,5 @@
 import { Router } from "express";
-import { createInquiry, listInquiries } from "../controllers/inquiry.controller";
+import { createInquiry, listInquiries } from "../controllers/inquiry.controller.js";
 
 const router = Router();
 

@@ -1,6 +1,6 @@
-import { Coupon } from "../models/coupon.model";
-import { Category } from "../models/category.model";
-import { Product } from "../models/product.model";
+import { Coupon } from "../models/coupon.model.js";
+import { Category } from "../models/category.model.js";
+import { Product } from "../models/product.model.js";
 
 const sampleCategories = [
   {

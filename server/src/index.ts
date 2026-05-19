@@ -1,9 +1,9 @@
 import path from "node:path";
 import { fileURLToPath } from "node:url";
 import dotenv from "dotenv";
-import app from "./app";
-import { connectDb } from "./config/db";
-import { seedDefaults } from "./config/seed";
+import app from "./app.js";
+import { connectDb } from "./config/db.js";
+import { seedDefaults } from "./config/seed.js";
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 dotenv.config({ path: path.resolve(__dirname, "../../.env") });

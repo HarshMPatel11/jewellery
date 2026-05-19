@@ -1,7 +1,7 @@
 import type { Request, Response } from "express";
-import { Category } from "../models/category.model";
-import { Product } from "../models/product.model";
-import { Review } from "../models/review.model";
+import { Category } from "../models/category.model.js";
+import { Product } from "../models/product.model.js";
+import { Review } from "../models/review.model.js";
 
 type ProductLike = {
   id?: number | null;

@@ -1,5 +1,5 @@
 import type { Request, Response } from "express";
-import { NewsletterSubscriber } from "../models/newsletter.model";
+import { NewsletterSubscriber } from "../models/newsletter.model.js";
 
 export async function subscribeNewsletter(req: Request, res: Response) {
   const email = String(req.body.email ?? "").trim().toLowerCase();

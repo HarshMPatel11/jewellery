@@ -1,5 +1,5 @@
 import { Schema, model } from "mongoose";
-import { nextSequence } from "./counter.model";
+import { nextSequence } from "./counter.model.js";
 
 const productSchema = new Schema(
   {

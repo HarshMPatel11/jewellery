@@ -1,6 +1,6 @@
 import type { Request, Response } from "express";
-import { Category } from "../models/category.model";
-import { Product } from "../models/product.model";
+import { Category } from "../models/category.model.js";
+import { Product } from "../models/product.model.js";
 
 export async function listCategories(_req: Request, res: Response) {
   const categories = await Category.find().lean();

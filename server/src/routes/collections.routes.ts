@@ -1,5 +1,5 @@
 import { Router } from "express";
-import { getCollectionsSummary } from "../controllers/collection.controller";
+import { getCollectionsSummary } from "../controllers/collection.controller.js";
 
 const router = Router();
 

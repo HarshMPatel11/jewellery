@@ -3,7 +3,7 @@ import {
   createReturnRequest,
   listReturnRequests,
   updateReturnRequest,
-} from "../controllers/return-request.controller";
+} from "../controllers/return-request.controller.js";
 
 const router = Router();
 

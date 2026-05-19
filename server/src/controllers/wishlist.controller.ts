@@ -1,6 +1,6 @@
 import type { Request, Response } from "express";
-import { Product } from "../models/product.model";
-import { WishlistItem } from "../models/wishlist.model";
+import { Product } from "../models/product.model.js";
+import { WishlistItem } from "../models/wishlist.model.js";
 
 const DEFAULT_SESSION = "default-session";
 

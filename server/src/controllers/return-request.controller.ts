@@ -1,5 +1,5 @@
 import type { Request, Response } from "express";
-import { ReturnRequest } from "../models/return-request.model";
+import { ReturnRequest } from "../models/return-request.model.js";
 
 function formatReturnRequest(request: any) {
   return {

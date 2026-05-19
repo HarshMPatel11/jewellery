@@ -1,7 +1,7 @@
 import type { Request, Response } from "express";
-import { Coupon } from "../models/coupon.model";
-import { Order } from "../models/order.model";
-import { Product } from "../models/product.model";
+import { Coupon } from "../models/coupon.model.js";
+import { Order } from "../models/order.model.js";
+import { Product } from "../models/product.model.js";
 
 const SHIPPING_CHARGE = Number(process.env.SHIPPING_CHARGE) || 0;
 const TAX_RATE = Number(process.env.TAX_RATE) || 0.03;

@@ -1,5 +1,5 @@
 import type { Request, Response } from "express";
-import { Review } from "../models/review.model";
+import { Review } from "../models/review.model.js";
 
 export async function createReview(req: Request, res: Response) {
   const review = await Review.create(req.body);

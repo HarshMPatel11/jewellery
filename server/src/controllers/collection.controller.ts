@@ -1,7 +1,7 @@
 import type { Request, Response } from "express";
-import { Category } from "../models/category.model";
-import { Product } from "../models/product.model";
-import { formatProduct } from "./product.controller";
+import { Category } from "../models/category.model.js";
+import { Product } from "../models/product.model.js";
+import { formatProduct } from "./product.controller.js";
 
 export async function getCollectionsSummary(_req: Request, res: Response) {
   const [categories, allProducts] = await Promise.all([Category.find().lean(), Product.find()]);

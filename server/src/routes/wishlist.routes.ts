@@ -1,5 +1,5 @@
 import { Router } from "express";
-import { addWishlistItem, getWishlist, removeWishlistItem } from "../controllers/wishlist.controller";
+import { addWishlistItem, getWishlist, removeWishlistItem } from "../controllers/wishlist.controller.js";
 
 const router = Router();
 
